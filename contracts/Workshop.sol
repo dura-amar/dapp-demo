@@ -54,10 +54,10 @@ contract WorkshopChain {
         require(name.length > 0, "You are not registered as participant.");
         _;
     }
-    modifier requireFree(Workshop memory w){
-        require(msg.value>=(w.fee),"Please send enough fee for the workshop.");
-        _;
-    }
+    // modifier requireFree(Workshop memory w){
+    //     require(msg.value>=(w.fee),"Please send enough fee for the workshop.");
+    //     _;
+    // }
 
     // Default constructor to set the owner address only
     constructor() {
@@ -139,7 +139,7 @@ contract WorkshopChain {
         return w1.participants;
     }
 
-    function getMyWorkshops() external view returns (Workshop[] memory) {
+    function getMyWorkshops() external view onlyOrganizer returns (Workshop[] memory) {
         uint len = workshops.length;
         Workshop[] memory ws = new Workshop[](len);
         uint i = 0;
@@ -187,10 +187,11 @@ contract WorkshopChain {
      *
      */
 
-    function registerForWorkshop(uint _workshopIndex) external onlyParticipant requireFree(workshops[_workshopIndex]) payable{
+    function registerForWorkshop(uint _workshopIndex) external onlyParticipant payable{
         //check values
+        Workshop memory w1= workshops[_workshopIndex];
+        require(msg.value>=w1.fee,"Please send enough fee for the workshop.");
 
-        Workshop memory w1 = workshops[_workshopIndex];
         uint pLen = w1.participants.length;
         workshops[_workshopIndex].participants[pLen] = (
             participants[msg.sender]
