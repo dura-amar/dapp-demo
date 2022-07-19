@@ -2,12 +2,14 @@
 
 This project demonstrates a basic application of smart contract using solidity language.
 
-Try running some of the following tasks:
+Tasks:
 
 ```shell
-npx hardhat help
 npx hardhat test
-GAS_REPORT=true npx hardhat test
+```
+Runs the tests written in [workshop.js](./test/workshop.js)
+
+```
 npx hardhat node
 npx hardhat run scripts/deploy.js
 ```
