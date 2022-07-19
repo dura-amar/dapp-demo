@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9;
 
 contract WorkshopChain {
-    address owner;
+    address public  owner;
 
     // This enum is for different user types
     enum UserType {

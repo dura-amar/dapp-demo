@@ -5,99 +5,130 @@ import { ethers } from 'ethers';
 import logo from './logo.svg';
 import './App.css';
 
+import { useForm } from "react-hook-form"
+
 //importing abi of our contract
 import WorkshopChain from './artifacts/contracts/WorkshopChain.sol/WorkshopChain.json';
 
 //storing our contract in a variable
 //address obtained after depoying the contract script
-const workshopAddress="0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+const workshopAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 
+const ParticipantForm = () => {
+  const { handleSubmit, participant, formState: { errors } } = useForm();
+  const onSubmit = values => console.log(values);
 
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input
+      label="Name"
+        {...participant("name", {
+          //validate: value => value !== "admin" || "Nice try!"
+        })}
+      />
+      <input
+      label="Email"
+        type="email"
+        {...participant("email", {
+          required: "Required",
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: "invalid email address"
+          }
+        })}
+      />
+      {errors.email && errors.email.message}
+      {errors.username && errors.username.message}
+
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
 
 function App() {
 
   //request access to the user's MetaMask account
   // use this with connect wallet button
-  async function requestAccount(){
-    await window.ethereum.request({method: 'eth_requestAccounts'});
+  async function requestAccount() {
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
   }
 
   // get functions
-  async function getCurrentWorkshops(){
+  async function getCurrentWorkshops() {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(workshopAddress,WorkshopChain.abi, provider)
+      const contract = new ethers.Contract(workshopAddress, WorkshopChain.abi, provider)
       try {
         const currentWorkshops = await contract.getCurrentWorkshops();
         console.log('Current Workshop: ', currentWorkshops)
       } catch (err) {
         console.log("Error: ", err)
       }
-    }   
+    }
   }
 
 
-  async function getMyWorkshops(){
+  async function getMyWorkshops() {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(workshopAddress,WorkshopChain.abi, provider)
+      const contract = new ethers.Contract(workshopAddress, WorkshopChain.abi, provider)
       try {
         const myWorkshops = await contract.getMyWorkshops()
         console.log('My Workshops: ', myWorkshops)
       } catch (err) {
         console.log("Error: ", err)
       }
-    }    
+    }
   }
 
-  async function getParticipants(workshopIndex){
+  async function getParticipants(workshopIndex) {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(workshopAddress,WorkshopChain.abi, provider)
+      const contract = new ethers.Contract(workshopAddress, WorkshopChain.abi, provider)
       try {
         const participants = await contract.getParticipants(workshopIndex)
         console.log('My Workshops: ', participants)
       } catch (err) {
         console.log("Error: ", err)
       }
-    }    
+    }
   }
 
   //add functions
-  async function addOrganizer(name,about) {
+  async function addOrganizer(name, about) {
     if (typeof window.ethereum !== 'undefined') {
       await requestAccount()
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner()
       const contract = new ethers.Contract(workshopAddress, WorkshopChain.abi, signer)
-      const transaction = await contract.addOrganizer(name,about)
+      const transaction = await contract.addOrganizer(name, about)
       await transaction.wait()
     }
   }
 
-  async function addParticipant(name,email) {
+  async function addParticipant(name, email) {
     if (typeof window.ethereum !== 'undefined') {
       await requestAccount()
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner()
       const contract = new ethers.Contract(workshopAddress, WorkshopChain.abi, signer)
-      const transaction = await contract.addParticipant(name,email)
+      const transaction = await contract.addParticipant(name, email)
       await transaction.wait()
     }
   }
 
-  async function addWorkshop(banneruri,title,startDate,endDate,venu,time,fee) {
+  async function addWorkshop(banneruri, title, startDate, endDate, venu, time, fee) {
     if (typeof window.ethereum !== 'undefined') {
       await requestAccount()
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner()
       const contract = new ethers.Contract(workshopAddress, WorkshopChain.abi, signer)
-      const transaction = await contract.addWorkshop(banneruri,title,startDate,endDate,venu,time,fee)
+      const transaction = await contract.addWorkshop(banneruri, title, startDate, endDate, venu, time, fee)
       await transaction.wait()
     }
   }
-  async function registerForWorkshopR(workshopIndex) {
+  async function registerForWorkshop(workshopIndex) {
     if (typeof window.ethereum !== 'undefined') {
       await requestAccount()
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -106,8 +137,13 @@ function App() {
       const transaction = await contract.registerForWorkshop(workshopIndex)
       await transaction.wait()
     }
+
+    /*
+    * For the from end parts
+    * Forms and table
+    */
   }
-  
+
 
   return (
     <div className="App">
@@ -119,7 +155,7 @@ function App() {
         <button onClick={addOrganizer}>Add Organizer</button>
         <button onClick={addParticipant}>Add Participant</button>
         <button onClick={addWorkshop}>Add workshops</button>
-      
+        <ParticipantForm/>
       </header>
     </div>
   );
