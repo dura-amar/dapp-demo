@@ -15,36 +15,6 @@ import WorkshopChain from './artifacts/contracts/WorkshopChain.sol/WorkshopChain
 const workshopAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 
-const ParticipantForm = () => {
-  const { handleSubmit, participant, formState: { errors } } = useForm();
-  const onSubmit = values => console.log(values);
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input
-      label="Name"
-        {...participant("name", {
-          //validate: value => value !== "admin" || "Nice try!"
-        })}
-      />
-      <input
-      label="Email"
-        type="email"
-        {...participant("email", {
-          required: "Required",
-          pattern: {
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: "invalid email address"
-          }
-        })}
-      />
-      {errors.email && errors.email.message}
-      {errors.username && errors.username.message}
-
-      <button type="submit">Submit</button>
-    </form>
-  );
-};
 
 function App() {
 
@@ -155,7 +125,6 @@ function App() {
         <button onClick={addOrganizer}>Add Organizer</button>
         <button onClick={addParticipant}>Add Participant</button>
         <button onClick={addWorkshop}>Add workshops</button>
-        <ParticipantForm/>
       </header>
     </div>
   );
