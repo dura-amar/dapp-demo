@@ -15,3 +15,6 @@ Deploy contract in the hardhat node
 ```
 npx hardhat run scripts/deploy_workshop.js
 ```
+
+### Points to remember
+ - The `constructor` should be made `payable`.
