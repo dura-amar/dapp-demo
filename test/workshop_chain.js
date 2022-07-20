@@ -79,7 +79,7 @@ describe(
         // participants can get the current workshops
         await expect(hardhatWorkshop.connect(addr2).getCurrentWorkshops()).to.be.revertedWith("You are not registered as participant.");
 
-        await hardhatWorkshop.connect(addr2).addParticipant("name","email");
+        await hardhatWorkshop.connect(addr2).addParticipant("name", "email");
 
 
         await expect(hardhatWorkshop.connect(addr2).getCurrentWorkshops());
@@ -91,12 +91,26 @@ describe(
         // participants can get the current workshops
         await expect(hardhatWorkshop.connect(addr2).getMyWorkshops()).to.be.revertedWith("You are not registered as organizer.");
 
-        await hardhatWorkshop.connect(addr2).addOrganizer("name","about");
+        await hardhatWorkshop.connect(addr2).addOrganizer("name", "about");
 
 
         await expect(hardhatWorkshop.connect(addr2).getMyWorkshops());
 
       });
+
+      it("Register for workshop.", async function () {
+
+        await hardhatWorkshop.connect(addr1).addOrganizer("name", "about");
+        hardhatWorkshop.connect(addr1).addWorkshop("uir-hash", "title", 12121212, 121212121, "venue", "time", 100);
+
+        
+
+        expect(hardhatWorkshop.registerForWorkshop('0')).to.be.be.revertedWith("You are not registered as participant.");
+        
+        await hardhatWorkshop.connect(addr2).addParticipant("name", "email");
+        expect(hardhatWorkshop.registerForWorkshop({value: ethers.utils.parseUnits("0.1")},'0')).to.be.revertedWith("Please send enough fee for the workshop.");
+      }
+      );
 
 
     });
