@@ -58,13 +58,15 @@ contract WorkshopChain {
 
     // Create events for logging
     event LogAddOrganizer(address organizer,string org_name);
-    event LogAddParticipant(address participants, string participant_email);
+    event LogAddParticipant(address participant, string participant_email);
     event LogAddWorkshop(address organizer, string workshop_name);
+    event LogRegisterForWorkshop(string workshop_name, address participant);
 
 
 
     // Default constructor to set the owner address only
-    constructor() {
+    // constructor should be payable if it involves the transaction
+    constructor() payable {
         owner = msg.sender;
     }
 
@@ -75,7 +77,7 @@ contract WorkshopChain {
      */
     function addOrganizer(string memory _name, string memory _about) external {
         organizers[msg.sender] = Organizer(msg.sender, _name, _about);
-        emit(msg.sender,_name);
+        emit LogAddOrganizer(msg.sender,_name);
     }
 
     /*
@@ -195,11 +197,11 @@ contract WorkshopChain {
      *
      */
 
-    function registerForWorkshop(uint _workshopIndex) external onlyParticipant payable{
+    function registerForWorkshop(uint _workshopIndex) external payable onlyParticipant {
         //check values
         Workshop memory w1= workshops[_workshopIndex];
         require(msg.value>=w1.fee,"Please send enough fee for the workshop.");
-
+        
         uint pLen = w1.participants.length;
         workshops[_workshopIndex].participants[pLen] = (
             participants[msg.sender]
@@ -210,6 +212,7 @@ contract WorkshopChain {
         if(msg.value>w1.fee){
             payable(msg.sender).transfer(msg.value-w1.fee);
         }
+        emit LogRegisterForWorkshop(w1.title,msg.sender);
 
     }
     //TODO : request for certificate
