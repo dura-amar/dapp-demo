@@ -18,3 +18,6 @@ npx hardhat run scripts/deploy_workshop.js
 
 ### Points to remember
  - The `constructor` should be made `payable`.
+### Reference material of the workshop
+- [Blockchain Technology Workshop
+](https://github.com/pdscorg/Blockchain-Fellowship) 
