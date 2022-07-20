@@ -109,6 +109,8 @@ describe(
         
         await hardhatWorkshop.connect(addr2).addParticipant("name", "email");
         expect(hardhatWorkshop.registerForWorkshop({value: ethers.utils.parseUnits("0.1")},'0')).to.be.revertedWith("Please send enough fee for the workshop.");
+
+        expect(addr1.getBalance()>0);
       }
       );
 
