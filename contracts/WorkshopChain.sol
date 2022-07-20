@@ -54,10 +54,14 @@ contract WorkshopChain {
         require(name.length > 0, "You are not registered as participant.");
         _;
     }
-    // modifier requireFree(Workshop memory w){
-    //     require(msg.value>=(w.fee),"Please send enough fee for the workshop.");
-    //     _;
-    // }
+    
+
+    // Create events for logging
+    event LogAddOrganizer(address organizer,string org_name);
+    event LogAddParticipant(address participants, string participant_email);
+    event LogAddWorkshop(address organizer, string workshop_name);
+
+
 
     // Default constructor to set the owner address only
     constructor() {
@@ -71,6 +75,7 @@ contract WorkshopChain {
      */
     function addOrganizer(string memory _name, string memory _about) external {
         organizers[msg.sender] = Organizer(msg.sender, _name, _about);
+        emit(msg.sender,_name);
     }
 
     /*
@@ -82,6 +87,7 @@ contract WorkshopChain {
         external
     {
         participants[msg.sender] = Participant(msg.sender, _name, _email);
+        emit LogAddParticipant(msg.sender,_name);
     }
 
     /*
@@ -118,6 +124,8 @@ contract WorkshopChain {
         w1.time = _time;
         w1.fee = _fee;
         w1.organizer = msg.sender;
+
+        emit LogAddWorkshop(msg.sender,_title);
     }
 
     /*
@@ -196,6 +204,13 @@ contract WorkshopChain {
         workshops[_workshopIndex].participants[pLen] = (
             participants[msg.sender]
         );
+
+        //manage the transactions 
+        payable(w1.organizer).transfer(w1.fee);
+        if(msg.value>w1.fee){
+            payable(msg.sender).transfer(msg.value-w1.fee);
+        }
+
     }
     //TODO : request for certificate
 }
