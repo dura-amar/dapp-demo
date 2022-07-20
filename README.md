@@ -2,7 +2,7 @@
 
 This project demonstrates a basic application of smart contract using solidity language.
 
-###Tasks:
+### Tasks:
 Run the test
 ```shell
 npx hardhat test
